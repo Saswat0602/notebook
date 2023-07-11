@@ -3,7 +3,8 @@ const User = require("../models/User");
 const router = express.Router();
 const { body, validationResult } = require("express-validator");
 const bcrypt = require("bcryptjs");
-var jwt = require("jsonwebtoken");
+const jwt = require("jsonwebtoken");
+const fetchUser = require("../middleware/fetchUser");
 
 const JWT_SECRET = "Iama$oy";
 
@@ -97,5 +98,21 @@ router.post('/login', [
   }
 
 
+})
+
+
+// ROUTE 3: Get loggedin User Details using: POST "/api/auth/getuser". Login required
+
+
+router.post('/getuser', fetchUser,  async (req, res) => {
+
+  try {
+    userId = req.user.id;
+    const user = await User.findById(userId).select("-password")
+    res.send(user)
+  } catch (error) {
+    console.error(error.message);
+    res.status(500).send("Internal Server Error");
+  }
 })
 module.exports = router
