@@ -15,7 +15,7 @@ router.get("/fetchallnotes", fetchUser, async (req, res) => {
   }
 });
 
-// ROUTE 2: Add a new Note using: POST "/api/auth/addnote". Login required
+// ROUTE 2: Add a new Note using: POST "/api/notes/addnote". Login required
 router.post(
   "/addnote",
   fetchUser,
@@ -49,5 +49,40 @@ router.post(
     }
   }
 );
+
+// ROUTE 3: Update an existing Note using: POST "/api/notes/updatenote". Login required
+router.put("/updatenote/:id", fetchUser, async (req, res) => {
+  const { title, description, tag } = req.body;
+  //create note obj
+
+  const newNote = {};
+
+  if (title) {
+    newNote.title = title;
+  }
+  if (description) {
+    newNote.description = description;
+  }
+  if (tag) {
+    newNote.tag = tag;
+  }
+
+  let note =await  Notes.findById(req.params.id);
+  if(!note){
+   return res.status(404).send("not found")
+  }
+   if(note.user.toString() !== req.user.id){
+        return res.status(401).send("Not Allowed");
+    }
+
+    note = await Notes.findByIdAndUpdate(req.params.id,{$set:newNote},{new:true})
+
+
+});
+
+
+
+// ROUTE 4: Delete an existing Note using: DELETE "/api/notes/deletenote". Login required
+
 
 module.exports = router;
