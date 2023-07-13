@@ -38,7 +38,7 @@ function App() {
       <NoteState>
         <Router>
           <Navbar />
-          <Alert message="r" />
+          <Alert alert= {alert} />
           <div className="container">
             <Routes>
               <Route path="/" element={<Home showAlert={showAlert} />} />
