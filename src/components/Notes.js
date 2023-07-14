@@ -6,13 +6,14 @@ import { useNavigate } from "react-router-dom";
 
 const Notes = (props) => {
   const context = useContext(noteContext);
-  let history = useNavigate;
+  let history = useNavigate();
   const { notes, getNotes, editNote } = context;
   useEffect(() => {
-    if (localStorage.getItem("token")) {
-      getNotes();
-    } else {
+    if(localStorage.getItem('token')===null) {
       history("/login");
+    } else {
+      getNotes();
+
     }
     // eslint-disable-next-line
   }, []);

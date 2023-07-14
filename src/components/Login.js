@@ -23,17 +23,9 @@ const Login = (props) => {
       // Save the auth token and redirect
       localStorage.setItem("token", json.authtoken);
       history("/");
-            props.showAlert(
-              "successfully logged in",
-              "success"
-            );
-
+      props.showAlert("successfully logged in", "success");
     } else {
-            props.showAlert(
-              "invalid details ",
-              "danger"
-            );
-
+      props.showAlert("invalid details ", "danger");
     }
   };
 
