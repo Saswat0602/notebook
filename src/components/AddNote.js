@@ -11,13 +11,11 @@ const AddNote = (props) => {
     tag: "default",
   });
 
-  const handleClick = (e) => {
-    e.preventDefault();
-    addNote(note.title, note.description, note.tag);
-    setNote({ title: "", description: "", tag: "default" });
-    props.showAlert("successfully Added ", "success");
-
-  };
+    const handleClick = (e) => {
+      e.preventDefault();
+      addNote(note.title, note.description, note.tag);
+      setNote({ title: "", description: "", tag: "" });
+    };
 
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });

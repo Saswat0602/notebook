@@ -1,42 +1,42 @@
+import React, { useState } from "react";
 import NoteContext from "./noteContext";
-import { useState } from "react";
 
 const NoteState = (props) => {
   const host = "http://localhost:5000";
   const notesInitial = [];
+
   const [notes, setNotes] = useState(notesInitial);
 
   // Get all Notes
+  // auth-token is required for this step
   const getNotes = async () => {
     // API Call
     const response = await fetch(`${host}/api/notes/fetchallnotes`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": localStorage.getItem('token'),
+        "auth-token": localStorage.getItem("token"),
       },
     });
     const json = await response.json();
-    console.log(json);
     setNotes(json);
   };
 
   // Add a Note
+  // auth-token is required for this step
   const addNote = async (title, description, tag) => {
-   // API Call
+    // TODO: API Call
     const response = await fetch(`${host}/api/notes/addnote`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "auth-token":localStorage.getItem('token'),
+        "auth-token": localStorage.getItem("token"),
       },
       body: JSON.stringify({ title, description, tag }),
     });
 
     const note = await response.json();
     setNotes(notes.concat(note));
-
-   
   };
 
   // Delete a Note
@@ -46,13 +46,13 @@ const NoteState = (props) => {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": localStorage.getItem('token'),
+        "auth-token": localStorage.getItem("token"),
       },
     });
     const json = response.json();
     console.log(json);
 
-    console.log("Deleting the note with id" + id);
+    //return only those notes whose id does not match with the given id
     const newNotes = notes.filter((note) => {
       return note._id !== id;
     });
@@ -61,12 +61,12 @@ const NoteState = (props) => {
 
   // Edit a Note
   const editNote = async (id, title, description, tag) => {
-    // API Call
+    // API calls
     const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
-        "auth-token": localStorage.getItem('token'),
+        "auth-token": localStorage.getItem("token"),
       },
       body: JSON.stringify({ title, description, tag }),
     });
@@ -77,6 +77,8 @@ const NoteState = (props) => {
     // Logic to edit in client
     for (let index = 0; index < newNotes.length; index++) {
       const element = newNotes[index];
+
+      // I want only that note whose id matches with the given id so that I can update that particular note
       if (element._id === id) {
         newNotes[index].title = title;
         newNotes[index].description = description;
@@ -87,6 +89,9 @@ const NoteState = (props) => {
     setNotes(newNotes);
   };
 
+  // Use a Provider to pass the current theme to the tree below.
+  // Any component can read it, no matter how deep it is.
+  // In this example, we're passing "notes, addNote, deleteNote, editNote, getNotes" as the current values
   return (
     <NoteContext.Provider
       value={{ notes, addNote, deleteNote, editNote, getNotes }}
@@ -95,4 +100,5 @@ const NoteState = (props) => {
     </NoteContext.Provider>
   );
 };
+
 export default NoteState;

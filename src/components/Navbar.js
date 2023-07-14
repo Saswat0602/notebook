@@ -1,13 +1,35 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import logo from "../assets/logo.png";
 
 const Navbar = () => {
+  // useNavigate hook returns a function which can be used for programmatic navigation.
+  let navigate = useNavigate();
+
+  // useLocation hook returns the location object used by the react-router. This object represents the current URL and is immutable. Whenever the URL changes, the useLocation hook returns a newly updated location object.
   let location = useLocation();
 
+  //when user logouts then we will also remove the auth-token from the local storage too
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/");
+  };
+
+  //here navbar is created using bootstrap
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
-        <Link className="navbar-brand" to="/">
+        <Link
+          className="navbar-brand"
+          to={!localStorage.getItem("token") ? `/` : "/home"}
+        >
+          <img
+            src={logo}
+            alt=""
+            width="30"
+            height="30"
+            className="mx-2 d-inline-block align-text-top"
+          />
           iNotebook
         </Link>
         <button
@@ -26,10 +48,10 @@ const Navbar = () => {
             <li className="nav-item">
               <Link
                 className={`nav-link ${
-                  location.pathname === "/" ? "active" : ""
+                  location.pathname === "/home" ? "active" : ""
                 }`}
                 aria-current="page"
-                to="/"
+                to={!localStorage.getItem("token") ? `/` : "/home"}
               >
                 Home
               </Link>
@@ -45,14 +67,22 @@ const Navbar = () => {
               </Link>
             </li>
           </ul>
-          <form className="d-flex">
-            <Link className="btn btn-primary mx-1" to="/login" role="button">
-              Login
-            </Link>
-            <Link className="btn btn-primary mx-1" to="/signup" role="button">
-              Signup
-            </Link>
-          </form>
+          {!localStorage.getItem("token") ? (
+            <form className="d-flex">
+              <Link className="btn btn-primary mx-1" to="/login" role="button">
+                Login
+              </Link>
+              <Link className="btn btn-warning mx-1" to="/signup" role="button">
+                Sign Up
+              </Link>
+            </form>
+          ) : (
+            <div className="d-flex">
+              <button onClick={handleLogout} className="btn btn-warning">
+                Log Out
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </nav>
@@ -60,3 +90,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+
